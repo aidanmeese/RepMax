@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
 import { createUser, getUser } from './services/user-services.js';
+import { createLift, getLifts, updateLift, deleteLift } from './services/lift-services.js';
 
 dotenv.config();
 
@@ -71,5 +72,109 @@ app.get("/user/:username", async (req, res) => {
   } catch (error) {
     console.error("Error getting user: ", error);
     return res.status(500).send("Error getting user");
+  }
+});
+
+// ================ Lift Routes ================
+/**
+ * creates a new lift in the db
+ * @param {string} req.body.user_id
+ * @param {string} req.body.type
+ * @param {number} req.body.reps
+ * @param {number} req.body.weight
+ * @param {string} req.body.weight_type - kg or lbs
+ * @returns {JSON} success message or error message
+ */
+app.post("/lift", async (req, res) => {
+  const { user_id, type, reps, weight, weight_type } = req.body;
+  if (!user_id || !type || !reps || !weight || !weight_type) {
+    return res.status(400).json({ error: "All fields are required" });
+  }
+
+  try {
+    // Create a new lift
+    const newLift = await createLift({ user_id, type, reps, weight, weight_type });
+    console.log("New Lift: ", newLift);
+    if (!newLift) return res.status(500).send("Error with createLift()");
+    return res.status(201).send("Lift created successfully");
+  } catch (error) {
+    console.error("Error creating lift: ", error);
+    return res.status(500).send("Error creating lift");
+  }
+});
+
+/**
+ * get all lifts from the db with user_id
+ * @param {string} req.params.user_id
+ * @returns {JSON} array of lift objects or error message
+ */
+app.get("/lifts/:user_id", async (req, res) => {
+  const { user_id } = req.params;
+  if (!user_id) {
+    return res.status(400).send("User ID is required");
+  }
+  
+  try {
+    const lifts = await getLifts(user_id);
+    if (!lifts) return res.status(404).send("No lifts found for this user");
+    return res.status(200).send(lifts);
+  } catch (error) {
+    console.error("Error getting lifts: ", error);
+    return res.status(500).send("Error getting lifts");
+  }
+});
+
+/**
+ * update a single lift in the db
+ * @param {string} req.body._id
+ * @param {string} req.body.user_id
+ * @param {string} req.body.type
+ * @param {number} req.body.reps
+ * @param {number} req.body.weight
+ * @param {string} req.body.weight_type - kg or lbs
+ * @returns {JSON} success message or error message
+ */
+app.put("/lift", async (req, res) => {
+  const { _id, user_id, type, reps, weight, weight_type } = req.body;
+  if (!_id || !user_id || !type || !reps || !weight || !weight_type) {
+    return res.status(400).json({ error: "All fields are required" });
+  }
+
+  try {
+    // Update the lift
+    const updatedLift = await updateLift({ _id, user_id, type, reps, weight, weight_type });
+    console.log("Updated Lift: ", updatedLift);
+    if (!updatedLift) return res.status(500).send("Error with updateLift()");
+    return res.status(200).send("Lift updated successfully");
+  } catch (error) {
+    console.error("Error updating lift: ", error);
+    return res.status(500).send("Error updating lift");
+  }
+});
+
+
+
+// Todo: Add authentication middleware to protect this route
+
+
+
+/**
+ * delete a single lift in the db
+ * @param {string} req.params._id
+ * @returns {JSON} success message or error message
+ */
+app.delete("/lift/:_id", async (req, res) => {
+  const { _id } = req.params;
+  if (!_id) {
+    return res.status(400).send("Lift ID is required");
+  }
+
+  try {
+    const deletedLift = await deleteLift(_id);
+    if (!deletedLift) return res.status(404).send("Lift not found");
+    return res.status(200).send("Lift deleted successfully");
+  } catch (error) {
+    console.error("Error deleting lift: ", error);
+    return res.status(500).send("Error deleting lift");
   }
 });
