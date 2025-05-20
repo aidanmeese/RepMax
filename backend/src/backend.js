@@ -1,8 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import bcrypt from 'bcrypt';
-import { createUser, getUser } from './services/user-services.js';
+import { getUser } from './services/user-services.js';
+import { createNewUser, loginUser } from './utils/api.js';
 import { createLift, getLifts, updateLift, deleteLift } from './services/lift-services.js';
 
 dotenv.config();
@@ -23,36 +23,20 @@ app.get("/", (req, res) => {
 
 // ================ User Routes ================
 /**
- * creates a new user in the db
+ * signup a new user in the db
  * @param {string} req.body.username
  * @param {string} req.body.password
- * @returns {JSON} success message or error message
+ * @returns {JSON} auth token or error message
  */
-app.post("/user", async (req, res) => {
-  const { username, password } = req.body;
-  if (!username || !password) {
-    return res.status(400).json({ error: "Username and password are required" });
-  }
+app.post("/signup", createNewUser);
 
-  try {
-    // Hash the password
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-
-    // Check for existing user
-    const exitingUser = await getUser(username);
-    if (exitingUser) return res.status(409).send("Username taken");
-
-    // Create a new user
-    const newUser = await createUser({ username, password: hashedPassword});
-    console.log("New User: ", newUser);
-    if (!newUser) return res.status(500).send("Error with createUser()");
-    return res.status(201).send("User created successfully");
-  } catch (error) {
-    console.error("Error creating user: ", error);
-    return res.status(500).send("Error creating user");
-  }
-});
+/**
+ * login a user in the db
+ * @param {string} req.body.username
+ * @param {string} req.body.password
+ * @returns {JSON} auth token or error message
+ */
+app.post("/login", loginUser);
 
 /**
  * get a single user from the db with username
