@@ -1,27 +1,86 @@
 import axios from 'axios';
+import { getDefaultStore } from "jotai";
+import { atomWithStorage } from "jotai/utils";
 
 export const BASE_URL = import.meta.env.DEV
     ? "http://localhost:8000"
     : "http://localhost:8000";
 
+const store = getDefaultStore();
+export const INVALID_TOKEN = "invalid_token";
+export const tokenAtom = atomWithStorage("token", INVALID_TOKEN, undefined, undefined, { getOnInIt: true });
+// accessible in react components with useAtom(tokenAtom)
+// accessible elsewhere with store.get(tokenAtom)
+
+export const expirationAtom = atomWithStorage(
+  "expiration",
+  Date.now(),
+  undefined,
+  {
+    getOnInit: true,
+  },
+);
+const EXPIRATION_TIME = 1000 * 60 * 60 * 24; // 24 hours
+
+export function signout() {
+  store.set(tokenAtom, INVALID_TOKEN);
+}
+
 // ================ User Routes ================
 /**
- * createUser - Create a new user in the db
+ * signUpUser - Create a new user in the db
  * @param {string} username
  * @param {string} password
- * @returns {Promise<Object>} - The newly created user object or error message
+ * @returns {Promise<{ success: boolean, error?: string }>} - State of the request
  */
-export async function createUser(username, password) {
+export async function signUpUser(username, password) {
     try {
-        const response = await axios.post(`${BASE_URL}/user`, {
+        const response = await axios.post(`${BASE_URL}/signup`, {
             username,
             password,
         });
-        return response.data;
+        store.set(tokenAtom, response.data.token);
+        store.set(expirationAtom, Date.now() + EXPIRATION_TIME);
+        return { success: true };
     } catch (error) {
-        console.error("Error creating user: ", error);
-        return null;
+        console.log(error);
+        store.set(tokenAtom, INVALID_TOKEN);
+        return { success: false, error: error.response.data };
     }
+}
+
+/**
+ * loginUser - Login a user in the db
+ * @param {string} username
+ * @param {string} password
+ * @returns {Promise<{ success: boolean, error?: string }>} - State of the request
+ */
+export async function loginUser(username, password) {
+    try {
+        const response = await axios.post(`${BASE_URL}/login`, {
+            username,
+            password,
+        });
+        store.set(tokenAtom, response.data.token);
+        store.set(expirationAtom, Date.now() + EXPIRATION_TIME);
+        return true
+    } catch (error) {
+        console.log(error);
+        store.set(tokenAtom, INVALID_TOKEN);
+        return false;
+    }
+}
+
+export function addAuthHeader(otherHeaders = {}) {
+  const token = store.get(tokenAtom);
+  if (token === INVALID_TOKEN) {
+    return otherHeaders;
+  } else {
+    return {
+      ...otherHeaders,
+      Authorization: `Bearer ${token}`,
+    };
+  }
 }
 
 /**

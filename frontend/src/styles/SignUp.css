@@ -1,0 +1,23 @@
+.signup-container {
+  display: flex;
+  width: 100%;
+  align-items: center; /* Vertically aligns the form */
+  justify-content: center; /* Horizontally centers the form */
+  font-family: Arial, sans-serif;
+  margin-top: 3rem; /* Adds space below the header to prevent overlap */
+}
+
+.account-creation-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  max-width: 800px; /* Optional: limits form width */
+}
+
+@media (max-width: 49rem) {
+  .signup-container {
+    flex-direction: column;
+  }
+}

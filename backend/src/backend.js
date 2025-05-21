@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { getUser } from './services/user-services.js';
-import { createNewUser, loginUser } from './utils/api.js';
+import { createNewUser, loginUser } from './services/auth.js';
 import { createLift, getLifts, updateLift, deleteLift } from './services/lift-services.js';
 
 dotenv.config();

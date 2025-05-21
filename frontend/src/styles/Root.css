@@ -4,7 +4,7 @@
     padding: 2rem;
     border: 1px solid #ccc;
     border-radius: 12px;
-    background-color: #f9f9f9;
+    background-color: #ffffff;
     font-family: Arial, sans-serif;
   }
   
@@ -12,7 +12,7 @@
     text-align: center;
     margin-bottom: 1.5rem;
     font-size: 1.75rem;
-    color: #333;
+    color: #000000;
   }
   
   .form {
@@ -40,18 +40,19 @@
   }
   
   .submit-button {
-    background-color: #007BFF;
+    background-color: #0b5a0b;
     color: white;
     padding: 0.75rem;
     font-size: 1rem;
     border: none;
     border-radius: 6px;
     cursor: pointer;
+    margin-top: 10px;
     transition: background-color 0.3s ease;
   }
   
   .submit-button:hover {
-    background-color: #0056b3;
+    background-color: #073b07;
   }
   
   .results {

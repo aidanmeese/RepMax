@@ -31,7 +31,7 @@ const RepMaxCalculator = () => {
 
   return (
     <div className="container">
-      <h2 className="title">Rep Max Calculator</h2>
+      <h2 className="title">RepMax Calculator</h2>
       <form onSubmit={handleSubmit} className="form">
         <div className="form-group">
           <label>Weight</label>

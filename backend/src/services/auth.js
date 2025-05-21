@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import { createUser, getUser } from '../db/user.js';
+import { createUser, getUser } from '../services/user-services.js';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';

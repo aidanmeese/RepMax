@@ -1,0 +1,58 @@
+/* Modify the existing CSS to make the header items align properly */
+
+/* Header container to align elements horizontally */
+.container2 {
+  display: flex;
+  justify-content: space-between; /* This spaces out the left and right sections */
+  align-items: center; /* Vertically centers the items */
+  margin: 0 auto; /* Center container horizontally */
+}
+
+/* Header left section (Logo) */
+.header-left {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; /* Ensures logo and title are aligned to the left */
+  text-decoration: none;
+}
+
+/* Logo styles */
+.logo {
+  width: auto; 
+  height: 50px; 
+  display: block;
+}
+/* Header title styles */
+.header-title {
+  font-size: 2rem;
+  color: #ffffff; 
+  margin-left: 10px; /* Space between logo and title */
+  margin-right: 15px;
+}
+
+/* Header right section (Login) */
+.header-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end; /* Ensures login container is pushed to the right */
+  color: #ffffff;
+}
+
+/* Login container styles */
+.login-container {
+  display: flex;
+  align-items: center;
+}
+
+.login-container span {
+  margin-right: 5px; /* Adjust the spacing between the text and the link */
+}
+
+.log-in {
+  text-decoration: none;
+  color: #007bff; /* Style the log-in link color */
+}
+
+.log-in:hover {
+  text-decoration: underline;
+}
