@@ -48,16 +48,6 @@ async function hashPassword(password) {
 }
 
 /**
- * Compare the provided password with the hashed password
- * @param {string} password
- * @param {string} hashedPassword
- * @returns {boolean} true if passwords match, false otherwise
- */
-async function comparePassword(password, hashedPassword) {
-    await bcrypt.compare(password, hashedPassword);
-}
-
-/**
  * Middleware to authenticate the user
  * @param {Object} req.headers.authorization - Bearer <token>
  * @param {Object} res - Response object
@@ -138,10 +128,11 @@ export async function loginUser(req, res) {
     if (!retrievedUser) {
         return res.status(404).send("User not found");
     }
-    
+    console.log("Retrieved User: ", retrievedUser);
+    console.log("Password: ", password);
     try {
         // Compare the password with the hashed password
-        const isMatch = await comparePassword(password, retrievedUser.password);
+        const isMatch = await bcrypt.compare(password, retrievedUser.password);
         if (!isMatch) return res.status(401).send("Invalid credentials");
     
         // Generate a token for the user

@@ -10,6 +10,7 @@ const LoginForm = () => {
         password: "",
     });
     const navigate = useNavigate();
+    const [error, setError] = useState(null);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -68,6 +69,8 @@ const LoginForm = () => {
             />
             </div>
 
+            {error && <p className="error-message">{error}</p>}
+            
             <button type="submit" className="create-account-button">
             Login
             </button>

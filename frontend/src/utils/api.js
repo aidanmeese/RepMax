@@ -63,11 +63,11 @@ export async function loginUser(username, password) {
         });
         store.set(tokenAtom, response.data.token);
         store.set(expirationAtom, Date.now() + EXPIRATION_TIME);
-        return true
+        return { success: true };
     } catch (error) {
         console.log(error);
         store.set(tokenAtom, INVALID_TOKEN);
-        return false;
+        return { success: false, error: error.response.data };
     }
 }
 
