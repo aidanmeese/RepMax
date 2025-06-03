@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { getUser } from './services/user-services.js';
-import { createNewUser, loginUser } from './services/auth.js';
+import { createNewUser, loginUser, authenticateUser } from './services/auth.js';
 import { createLift, getLifts, updateLift, deleteLift } from './services/lift-services.js';
 
 dotenv.config();
@@ -39,11 +39,34 @@ app.post("/signup", createNewUser);
 app.post("/login", loginUser);
 
 /**
+ * get current user info
+ * This route is protected by the authenticateUser middleware.
+ * @returns {Promise<User?>}
+ */
+app.get("/user/me", authenticateUser, async (req, res) => {
+  try {
+    console.log("Getting user:", req.user.username);
+
+    const user = await getUser(req.user.username);
+    // Check for not found
+    if (user === undefined || user === null) {
+      res.status(404).send("Unable to find the user with that email.");
+    } else {
+      res.send(user);
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("An error occurred in the server.");
+  }
+});
+
+/**
  * get a single user from the db with username
  * @param {string} req.params.username
  * @returns {JSON} user object or error message
  */
 app.get("/user/:username", async (req, res) => {
+  console.log("Getting user:", req.params.username);  
   const { username } = req.params;
   if (!username) {
     return res.status(400).send("Username is required");

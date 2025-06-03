@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { UserSchema } from "../schemas/user.js";
+import { getLifts } from "./lift-services.js";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -45,9 +46,13 @@ export async function getUser(username) {
     const userModel = getDBConnection().model("User", UserSchema);
     try {
         // Find without password
-        const user = await userModel.findOne({ username: username }).select("-password");
+        const user = await userModel.findOne({ username: username }).select("-password -__v");
         
         if (!user) return null;
+
+        // Add lifts to user object
+        user.lifts = await getLifts(user._id);
+        console.log("Lifts for user:", user.lifts);
 
         return user;
     } catch (error) {

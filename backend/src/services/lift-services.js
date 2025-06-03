@@ -44,9 +44,11 @@ export async function createLift(lift) {
  * @returns {Promise<Array<Object>?>} - The array of lift objects or false if error
  */
 export async function getLifts(user_id) {
+    console.log("Getting lifts for user_id:", user_id);
+
     const liftModel = getDBConnection().model("Lift", LiftSchema);
     try {
-        const lifts = await liftModel.find({ user_id: user_id }).sort({ created_at: -1 });
+        const lifts = await liftModel.find({ user_id: user_id }).select("-__v").sort({ created_at: -1 });
         return lifts;
     } catch (error) {
         console.log(error);

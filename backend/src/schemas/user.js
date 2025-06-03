@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { LiftSchema } from "./lift.js";
 
 export const UserSchema = new mongoose.Schema({
     password: {
@@ -12,6 +13,10 @@ export const UserSchema = new mongoose.Schema({
         required: true,
         unique: true,
     },
+    lifts: {
+        type: [LiftSchema],
+        default: [],
+    }, 
   },
   { collection: "users" },
 );

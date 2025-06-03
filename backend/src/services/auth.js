@@ -59,11 +59,14 @@ export function authenticateUser(req, res, next) {
   //Getting the 2nd part of the auth header (the token)
   const token = authHeader && authHeader.split(" ")[1];
 
+  console.log("Auth Header:", authHeader);
+  console.log("Token:", token);
+
   if (!token) {
     console.log("No token received");
     res.status(401).send("Unauthorized: No token provided");
   } else {
-    jwt.verify(token, process.env.TOKEN_SECRET, (error, decoded) => {
+    jwt.verify(token, process.env.JWT_SECRET, (error, decoded) => {
       if (decoded) {
         // attach username from token payload to req.user for ease of use
         req.user = { username: decoded.username, id: decoded.id };
@@ -129,7 +132,6 @@ export async function loginUser(req, res) {
         return res.status(404).send("User not found");
     }
     console.log("Retrieved User: ", retrievedUser);
-    console.log("Password: ", password);
     try {
         // Compare the password with the hashed password
         const isMatch = await bcrypt.compare(password, retrievedUser.password);
