@@ -1,12 +1,26 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useState, useRef, useEffect } from "react";
+import { useIsLoggedIn } from "../utils/hooks";
+import { signout } from "../utils/api";
 import "../styles/NavBar.css";
 
 function NavBar() {
-    // Get the current location/pathname from react-router
-    const location = useLocation();
+    const isLoggedIn = useIsLoggedIn();
+    const [dropdownOpen, setDropdownOpen] = useState(false);
+    const dropdownRef = useRef(null);
 
-    // Check if the current page is the SignUp page
-    const isSignUp = location.pathname === "/signup";
+    const toggleDropdown = () => setDropdownOpen(prev => !prev);
+
+    // Close dropdown when clicking outside
+    useEffect(() => {
+      const handleClickOutside = (e) => {
+        if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+          setDropdownOpen(false);
+        }
+      };
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
 
     return (
       <header>
@@ -22,21 +36,34 @@ function NavBar() {
 
             <div className="header-right">
               <div className="login-container">
-                {isSignUp ? (
-                  <>
-                    <span>Already have an account? </span>
-                    <Link to="/login" className="log-in">
-                      Log in
-                    </Link>
-                  </>
-                ) : (
-                  <>
-                    <span>Don&apos;t have an account? </span>
-                    <Link to="/signup" className="log-in">
-                      Sign up
-                    </Link>
-                  </>
-                )}
+                {/* DROPDOWN BUTTON */}
+                <div className="dropdown" ref={dropdownRef}>
+                  <button 
+                    className={`hamburger ${dropdownOpen ? "open" : ""}`}
+                    onClick={toggleDropdown}
+                    aria-label="Menu"
+                  >
+                    <span className="bar top-bar"></span>
+                    <span className="bar middle-bar"></span>
+                    <span className="bar bottom-bar"></span>
+                  </button>
+                  {dropdownOpen && (
+                    <div className="dropdown-menu">
+                      <Link to="/" className="dropdown-item" onClick={() => setDropdownOpen(false)}>Calculator</Link>
+                      {isLoggedIn ? (
+                        <>
+                          <Link to="/profile" className="dropdown-item" onClick={() => setDropdownOpen(false)}>Profile</Link>
+                          <Link to="/" className="dropdown-item" onClick={() => {signout(); setDropdownOpen(false);}}>Logout</Link>
+                        </>
+                        ) : (
+                        <>
+                          <Link to="/login" className="dropdown-item" onClick={() => setDropdownOpen(false)}>Login</Link>
+                        </>
+                      )}
+                      <Link to="/leaderboard" className="dropdown-item" onClick={() => setDropdownOpen(false)}>Leaderboard</Link>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -52,4 +79,3 @@ export default function Layout() {
       </div>
     );
 }
-//             <div className="password-input-container">

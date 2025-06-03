@@ -98,6 +98,22 @@ export async function getUser(username) {
     }
 }
 
+/**
+ * getUserFromToken - Get a single user from the db using the token
+ * @returns {Promise<Object>} - The user object or error message
+ */
+export async function getUserFromToken() {
+    try {
+        const response = await axios.get(`${BASE_URL}/user/me`, {
+            headers: addAuthHeader(),
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error getting user from token: ", error);
+        return null;
+    }
+}
+
 // ================ Lift Routes ================
 /**
  * createLift - Create a new lift in the db
@@ -111,6 +127,7 @@ export async function getUser(username) {
 export async function createLift(user_id, type, reps, weight, weight_type) {
     try {
         const response = await axios.post(`${BASE_URL}/lift`, {
+            headers: addAuthHeader(),
             user_id,
             type,
             reps,

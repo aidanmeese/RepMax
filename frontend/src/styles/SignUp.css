@@ -4,7 +4,6 @@
   align-items: center; /* Vertically aligns the form */
   justify-content: center; /* Horizontally centers the form */
   font-family: Arial, sans-serif;
-  margin-top: 3rem; /* Adds space below the header to prevent overlap */
 }
 
 .account-creation-form {

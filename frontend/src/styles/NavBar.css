@@ -36,23 +36,70 @@
   align-items: center;
   justify-content: flex-end; /* Ensures login container is pushed to the right */
   color: #ffffff;
+  margin-bottom: 1rem; /* Adjusts vertical alignment */
 }
 
-/* Login container styles */
-.login-container {
+/* Hamburger button */
+/* Hamburger button */
+.hamburger {
+  height: 34px;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  justify-content: space-between;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  z-index: 1100;
 }
 
-.login-container span {
-  margin-right: 5px; /* Adjust the spacing between the text and the link */
+.hamburger .bar {
+  width: 50px;
+  height: 5px;
+  background-color: white;
+  border-radius: 3px;
+  transition: all 0.3s ease;
+  transform-origin: center;
 }
 
-.log-in {
+.hamburger.open .top-bar {
+  transform: translateY(14.5px) rotate(45deg);
+}
+
+.hamburger.open .middle-bar {
+  opacity: 0;
+}
+
+.hamburger.open .bottom-bar {
+  transform: translateY(-14.5px) rotate(-45deg);
+}
+
+/* Dropdown menu */
+.dropdown {
+  position: relative;
+  display: inline-block;
+  margin-right: 0rem;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 120%;
+  right: 0;
+  background-color: #222;
+  border: 1px solid #555;
+  border-radius: 4px;
+  padding: 0.5rem;
+  min-width: 150px;
+  z-index: 1000;
+}
+
+.dropdown-item {
+  display: block;
+  padding: 0.5rem;
+  color: white;
   text-decoration: none;
-  color: #007bff; /* Style the log-in link color */
 }
 
-.log-in:hover {
-  text-decoration: underline;
+.dropdown-item:hover {
+  background-color: #333;
 }

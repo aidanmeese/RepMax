@@ -1,0 +1,74 @@
+.profile-container {
+  background-color: #002d00; /* Deep forest green */
+  color: #ffffff;
+  padding: 2rem;
+  max-width: 600px;
+  margin: 3rem auto;
+  border-radius: 12px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.4);
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.profile-username {
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+  color: #ffffff;
+}
+
+.sort-control {
+  margin-bottom: 2rem;
+  font-size: 1rem;
+}
+
+.sort-control select {
+  margin-left: 0.5rem;
+  padding: 0.3rem;
+  background-color: #ffffff;
+  color: #002d00;
+  border-radius: 4px;
+  border: none;
+  font-weight: bold;
+}
+
+.lift-group {
+  margin-bottom: 2rem;
+}
+
+.lift-type {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid #ffffff33;
+  padding-bottom: 0.5rem;
+}
+
+.lift-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #003d00;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.lift-table th,
+.lift-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #ffffff22;
+}
+
+.lift-table th {
+  background-color: #004d00;
+  text-align: left;
+  color: #fff;
+}
+
+.lift-table tr:hover {
+  background-color: #005500;
+  transition: background-color 0.2s ease;
+}
+
+.profile-loading {
+  color: white;
+  text-align: center;
+  padding: 4rem;
+  font-size: 1.5rem;
+}
