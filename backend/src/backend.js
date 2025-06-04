@@ -3,7 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { getUser } from './services/user-services.js';
 import { createNewUser, loginUser, authenticateUser } from './services/auth.js';
-import { createLift, getLifts, updateLift, deleteLift } from './services/lift-services.js';
+import { createLift, getLifts, updateLift, deleteLift, getTopLifts } from './services/lift-services.js';
 
 dotenv.config();
 
@@ -92,8 +92,9 @@ app.get("/user/:username", async (req, res) => {
  * @param {string} req.body.weight_type - kg or lbs
  * @returns {JSON} success message or error message
  */
-app.post("/lift", async (req, res) => {
-  const { user_id, type, reps, weight, weight_type } = req.body;
+app.post("/lift", authenticateUser, async (req, res) => {
+  const { type, reps, weight, weight_type } = req.body;
+  const user_id = req.user.id; // Get user_id from authenticated user
   if (!user_id || !type || !reps || !weight || !weight_type) {
     return res.status(400).json({ error: "All fields are required" });
   }
@@ -141,7 +142,7 @@ app.get("/lifts/:user_id", async (req, res) => {
  * @param {string} req.body.weight_type - kg or lbs
  * @returns {JSON} success message or error message
  */
-app.put("/lift", async (req, res) => {
+app.put("/lift", authenticateUser, async (req, res) => {
   const { _id, user_id, type, reps, weight, weight_type } = req.body;
   if (!_id || !user_id || !type || !reps || !weight || !weight_type) {
     return res.status(400).json({ error: "All fields are required" });
@@ -160,18 +161,15 @@ app.put("/lift", async (req, res) => {
 });
 
 
-
-// Todo: Add authentication middleware to protect this route
-
-
+// Todo: Add a check for user_id before deleting a lift
 
 /**
  * delete a single lift in the db
  * @param {string} req.params._id
  * @returns {JSON} success message or error message
  */
-app.delete("/lift/:_id", async (req, res) => {
-  const { _id } = req.params;
+app.delete("/lift/:_id", authenticateUser, async (req, res) => {
+  const { _id, user_id } = req.params;
   if (!_id) {
     return res.status(400).send("Lift ID is required");
   }
@@ -183,5 +181,26 @@ app.delete("/lift/:_id", async (req, res) => {
   } catch (error) {
     console.error("Error deleting lift: ", error);
     return res.status(500).send("Error deleting lift");
+  }
+});
+
+/**
+ * get top lifts by type
+ * @param {string} req.query.weight_type - kg or lbs (optional, defaults to lbs)
+ * @returns {JSON} array of top lifts or error message
+ */
+app.get("/leaderboard", async (req, res) => {
+  const { weight_type } = req.query;
+  if (weight_type && !['kg', 'lbs'].includes(weight_type)) {
+    return res.status(400).send("Invalid weight type. Use 'kg' or 'lbs'.");
+  }
+
+  try {
+    const topLifts = await getTopLifts(weight_type);
+    if (!topLifts) return res.status(404).send("No top lifts found");
+    return res.status(200).send(topLifts);
+  } catch (error) {
+    console.error("Error getting top lifts: ", error);
+    return res.status(500).send("Error getting top lifts");
   }
 });

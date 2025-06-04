@@ -30,6 +30,10 @@ export const LiftSchema = new mongoose.Schema({
         enum: ['kg', 'lbs'],
         required: true,
     },
+    one_rep_max: {
+        type: Number,
+        required: true,
+    },
     created_at: {
         type: Date,
         default: Date.now,

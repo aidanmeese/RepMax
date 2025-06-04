@@ -124,15 +124,18 @@ export async function getUserFromToken() {
  * @param {string} weight_type - kg or lbs
  * @returns {Promise<Object>} - The newly created lift object or error message
  */
-export async function createLift(user_id, type, reps, weight, weight_type) {
+export async function createLift(type, reps, weight, weight_type) {
+    console.log("Creating lift with: ", type, reps, weight, weight_type);
     try {
+        console.log("auth header: ", addAuthHeader());
         const response = await axios.post(`${BASE_URL}/lift`, {
-            headers: addAuthHeader(),
-            user_id,
             type,
             reps,
             weight,
             weight_type,
+        },
+        {
+            headers: addAuthHeader(),
         });
         return response.data;
     } catch (error) {
@@ -188,6 +191,23 @@ export async function updateLift(lift_id, updates) {
         return response.data;
     } catch (error) {
         console.error("Error updating lift: ", error);
+        return null;
+    }
+}
+
+/**
+ * leaderboard - Get the leaderboard for lifts
+ * @param {string} weight_type - kg or lbs
+ * @returns {Promise<Array>} - An array of lift objects sorted by one_rep_max and categorized by type
+ */
+export async function leaderboard(weight_type) {
+    try {
+        const response = await axios.get(`${BASE_URL}/leaderboard`, {
+            params: { weight_type },
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error getting leaderboard: ", error);
         return null;
     }
 }

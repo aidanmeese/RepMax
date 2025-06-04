@@ -52,7 +52,26 @@ export async function getUser(username) {
 
         // Add lifts to user object
         user.lifts = await getLifts(user._id);
-        console.log("Lifts for user:", user.lifts);
+
+        return user;
+    } catch (error) {
+        console.log(error);
+        return false;
+    }
+}
+
+/**
+ * getUserFromId - Get a single username from db with user_id
+ * @param {ObjectId} user_id
+ * @returns {Promise<Object?>} - The user object or false if error
+ */
+export async function getUserFromId(user_id) {
+    const userModel = getDBConnection().model("User", UserSchema);
+    try {
+        // Find just username
+        const user = await userModel.findById(user_id).select("username -_id");
+        
+        if (!user) return null;
 
         return user;
     } catch (error) {

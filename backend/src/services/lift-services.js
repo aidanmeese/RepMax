@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
-import { LiftSchema } from "../schemas/lift.js";
+import { LiftSchema, LiftTypes } from "../schemas/lift.js";
+import { getUserFromId } from "./user-services.js";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -29,6 +30,10 @@ function getDBConnection() {
 export async function createLift(lift) {
     const liftModel = getDBConnection().model("Lift", LiftSchema);
     try {
+        // calculate one_rep_max based on the epley formula
+        let oneRepMax = lift.weight * (1 + lift.reps / 30)
+        lift.one_rep_max = oneRepMax / (1 + 1 / 30);
+
         const newLift = new liftModel(lift);
         await newLift.save();
         return newLift;
@@ -71,6 +76,9 @@ export async function updateLift(lift) {
     try {
         // Update the updated_at field to the current date
         lift.updated_at = new Date();
+        
+        // Update one_rep_max based on the epley formula
+        lift.one_rep_max = lift.weight * (1 + (lift.reps / 30)); // Calculate one rep max
 
         const updatedLift = await liftModel.findByIdAndUpdate(lift._id, lift, { new: true });
         return updatedLift;
@@ -92,6 +100,43 @@ export async function deleteLift(_id) {
         return deletedLift;
     } catch (error) {
         console.log(error);
+        return false;
+    }
+}
+
+/**
+ * getTopLifts - Get top lifts by type
+ * @param {string} weight_type - kg or lbs (optional, defaults to lbs)
+ * @returns {Promise<Array<Object>?>} - The array of top lift objects or false if error
+ */
+export async function getTopLifts(weight_type = "lbs") {
+    const liftModel = getDBConnection().model("Lift", LiftSchema);
+    const topLifts = {};
+
+    try {
+        for (let type of LiftTypes) {
+            const lifts = await liftModel.find({ type, weight_type })
+                .sort({ one_rep_max: -1 })
+                .limit(10)
+                .select("-__v -created_at -updated_at");
+
+            // Add usernames
+            const liftsWithUsernames = await Promise.all(
+                lifts.map(async (lift) => {
+                    const user = await getUserFromId(lift.user_id);
+                    return {
+                        ...lift.toObject(),
+                        username: user ? user.username : "Unknown User",
+                    };
+                })
+            );
+
+            topLifts[type] = liftsWithUsernames;
+        }
+
+        return topLifts;
+    } catch (error) {
+        console.error(error);
         return false;
     }
 }
