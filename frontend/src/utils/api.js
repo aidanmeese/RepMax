@@ -3,7 +3,7 @@ import { getDefaultStore } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 
 export const BASE_URL = import.meta.env.DEV
-    ? "http://localhost:8000"
+    ? "https://repmax-api.onrender.com"
     : "http://localhost:8000";
 
 const store = getDefaultStore();
