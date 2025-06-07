@@ -69,11 +69,22 @@ export async function getLifts(user_id) {
  * @param {number} lift.reps
  * @param {number} lift.weight
  * @param {string} lift.weight_type - kg or lbs
+ * @param {ObjectId} user_id - to check ownership
  * @returns {Promise<Object?>} - The updated lift object or false if error
  */
-export async function updateLift(lift) {
+export async function updateLift(lift, user_id) {
     const liftModel = getDBConnection().model("Lift", LiftSchema);
     try {
+        // Check the user owns the lift
+        const existingLift = await liftModel.findById(lift._id);
+        if (!existingLift) {
+            console.log("Lift not found");
+            return false;
+        } else if (existingLift.user_id.toString() !== lift.user_id.toString()) {
+            console.log("Lift does not belong to user");
+            return false;
+        }
+
         // Update the updated_at field to the current date
         lift.updated_at = new Date();
         
@@ -91,11 +102,22 @@ export async function updateLift(lift) {
 /**
  * deleteLift - Delete a single lift in the db
  * @param {ObjectId} _id
+ * @param {ObjectId} user_id
  * @returns {Promise<Object?>} - The deleted lift object or false if error
  */
-export async function deleteLift(_id) {
+export async function deleteLift(_id, user_id) {
     const liftModel = getDBConnection().model("Lift", LiftSchema);
     try {
+        // Check if the lift belongs to the user
+        const lift = await liftModel.findById(_id);
+        if (!lift) {
+            console.log("Lift not found");
+            return false;
+        }
+        if (lift.user_id.toString() !== user_id.toString()) {
+            console.log("Lift does not belong to user");
+            return false;
+        }
         const deletedLift = await liftModel.findByIdAndDelete(_id);
         return deletedLift;
     } catch (error) {

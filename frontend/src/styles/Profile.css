@@ -72,3 +72,179 @@
   padding: 4rem;
   font-size: 1.5rem;
 }
+
+.update-lift-btn {
+  background: none;
+  color: #ffffff;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.update-lift-btn:hover {
+  color: #bdb834;
+}
+
+@media (max-width: 480px) {
+  .sort-control {
+    font-size: 0.9rem;
+  }
+  .sort-control select {
+    font-size: 0.6rem;
+    padding: 0.2rem;
+  }
+  .lift-table th,
+  .lift-table td {
+    padding: 8px 8px;
+    font-size: 0.9rem;
+  }
+  .update-lift-btn {
+    font-size: 1rem;
+  }
+}
+
+/* Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+/* Modal Container */
+.modal {
+  background-color: #003500; /* Dark forest green */
+  color: #ffffff;
+  padding: 2rem;
+  border-radius: 12px;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 0 16px rgba(0, 0, 0, 0.6);
+  font-family: 'Segoe UI', sans-serif;
+  animation: fadeInModal 0.3s ease-in-out;
+}
+
+/* Modal animation */
+@keyframes fadeInModal {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Modal Header */
+.modal h2 {
+  margin-top: 0;
+  font-size: 1.6rem;
+  margin-bottom: 1rem;
+  color: #ccc;
+  text-align: center;
+}
+
+/* Modal Form */
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.modal-form label {
+  font-size: 0.95rem;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.modal-form input,
+.modal-form select {
+  padding: 0.5rem;
+  font-size: 1rem;
+  background-color: #ffffff;
+  color: #002d00;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  outline: none;
+}
+
+/* Button group */
+.modal-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.modal-buttons button {
+  flex: 1;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  border: none;
+}
+
+.modal-buttons .delete-cancel-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: .5rem;
+}
+
+.modal-buttons .update-btn {
+  background-color: #006600;
+  color: #ffffff;
+}
+
+.modal-buttons .update-btn:hover {
+  background-color: #009900;
+}
+
+.modal-buttons .cancel-btn {
+  background-color: #444;
+  color: #fff;
+}
+
+.modal-buttons .cancel-btn:hover {
+  background-color: #666;
+}
+
+.modal-buttons .delete-btn {
+  background-color: #cc0000;
+  color: #ffffff;
+}
+
+.modal-buttons .delete-btn:hover {
+  background-color: #ff0000;
+}
+
+@media (max-width: 480px) {
+  .modal {
+    padding: 1.5rem;
+  }
+
+  .modal h2 {
+    font-size: 1.4rem;
+  }
+
+  .modal-form input,
+  .modal-form select {
+    font-size: 0.9rem;
+  }
+
+  .modal-buttons button {
+    font-size: 0.9rem;
+    padding: 0.5rem;
+  }
+}

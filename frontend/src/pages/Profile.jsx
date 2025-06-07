@@ -1,12 +1,19 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { getUserFromToken } from "../utils/api.js";
+import { getUserFromToken, updateLift, deleteLift } from "../utils/api.js";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPen } from "@fortawesome/free-solid-svg-icons";
+import UpdateLiftModal from "../components/UpdateLiftModal.jsx";
 import "../styles/Profile.css"; 
 
 function ProfilePage() {
     const [user, setUser] = useState(null);
     const [sortKey, setSortKey] = useState("weight");
     const [unitFilter, setUnitFilter] = useState("lbs");
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [editingLift, setEditingLift] = useState(null);
+    const [formData, setFormData] = useState({ reps: "", weight: "", weight_type: "lbs" });
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -17,6 +24,32 @@ function ProfilePage() {
     }, []);
 
     if (!user) return <div className="profile-loading">Loading...</div>;
+
+     const openEditModal = (lift) => {
+        setEditingLift(lift);
+        setFormData({ _id: lift._id, reps: lift.reps, weight: lift.weight, weight_type: lift.weight_type });
+        setIsModalOpen(true);
+    };
+
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleUpdate = async (e) => {
+        e.preventDefault();
+        await updateLift(editingLift._id, formData);
+        setIsModalOpen(false);
+        window.location.reload();
+    };
+
+    const handleDelete = async (liftId) => {
+        const confirmed = window.confirm("Are you sure you want to delete this lift?");
+        if (!confirmed) return;
+        // Call API to delete the lift, then close the modal and refresh data
+        await deleteLift(liftId);
+        setIsModalOpen(false);
+        window.location.reload();
+    };
 
     const liftsByType = user.lifts
         .filter(lift => lift.weight_type === unitFilter)
@@ -82,6 +115,7 @@ function ProfilePage() {
                                     <th>1RM</th>
                                     <th>Unit</th>
                                     <th>Date</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -92,6 +126,11 @@ function ProfilePage() {
                                     <td>{Number(lift.one_rep_max).toFixed(1)}</td>
                                     <td>{lift.weight_type}</td>
                                     <td>{new Date(lift.created_at).toLocaleDateString()}</td>
+                                    <td>
+                                        <button className="update-lift-btn" onClick={() => openEditModal(lift)}>
+                                            <FontAwesomeIcon icon={faPen} />
+                                        </button>
+                                    </td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -99,6 +138,15 @@ function ProfilePage() {
                     </div>
                 ))
             )}
+
+            <UpdateLiftModal
+                isOpen={isModalOpen}
+                onRequestClose={() => setIsModalOpen(false)}
+                formData={formData}
+                onChange={handleChange}
+                onSubmit={handleUpdate}
+                onDelete={handleDelete}
+            />
         </div>
     );
 }

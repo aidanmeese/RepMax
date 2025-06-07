@@ -53,7 +53,12 @@ function NavBar() {
                       {isLoggedIn ? (
                         <>
                           <Link to="/profile" className="dropdown-item" onClick={() => setDropdownOpen(false)}>Profile</Link>
-                          <Link to="/" className="dropdown-item" onClick={() => {signout(); setDropdownOpen(false);}}>Logout</Link>
+                          <Link to="/" className="dropdown-item" onClick={() => {
+                            const confirmed = window.confirm("Are you sure you want to sign out?"); 
+                            if (!confirmed) return; 
+                            signout(); 
+                            setDropdownOpen(false);
+                            }}>Logout</Link>
                         </>
                         ) : (
                         <>

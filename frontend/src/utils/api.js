@@ -166,7 +166,11 @@ export async function getLifts(user_id) {
  */
 export async function deleteLift(lift_id) {
     try {
-        const response = await axios.delete(`${BASE_URL}/lift/${lift_id}`);
+        const response = await axios.delete(`${BASE_URL}/lift/${lift_id}`, 
+            {
+                headers: addAuthHeader(),
+            }
+        );
         return response.data;
     } catch (error) {
         console.error("Error deleting lift: ", error);
@@ -187,7 +191,12 @@ export async function deleteLift(lift_id) {
  */
 export async function updateLift(lift_id, updates) {
     try {
-        const response = await axios.put(`${BASE_URL}/lift/${lift_id}`, updates);
+        const response = await axios.put(`${BASE_URL}/lift/${lift_id}`, 
+            updates, 
+            {
+                headers: addAuthHeader(),
+            }
+        );
         return response.data;
     } catch (error) {
         console.error("Error updating lift: ", error);

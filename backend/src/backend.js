@@ -148,9 +148,13 @@ app.put("/lift", authenticateUser, async (req, res) => {
     return res.status(400).json({ error: "All fields are required" });
   }
 
+  if (! req.user || req.user.id !== user_id) {
+    return res.status(403).send("You do not have permission to update this lift");
+  }
+
   try {
     // Update the lift
-    const updatedLift = await updateLift({ _id, user_id, type, reps, weight, weight_type });
+    const updatedLift = await updateLift({ _id, user_id, type, reps, weight, weight_type }, req.user.id);
     console.log("Updated Lift: ", updatedLift);
     if (!updatedLift) return res.status(500).send("Error with updateLift()");
     return res.status(200).send("Lift updated successfully");
@@ -160,22 +164,25 @@ app.put("/lift", authenticateUser, async (req, res) => {
   }
 });
 
-
-// Todo: Add a check for user_id before deleting a lift
-
 /**
  * delete a single lift in the db
  * @param {string} req.params._id
  * @returns {JSON} success message or error message
  */
 app.delete("/lift/:_id", authenticateUser, async (req, res) => {
-  const { _id, user_id } = req.params;
+  const { _id } = req.params;
   if (!_id) {
     return res.status(400).send("Lift ID is required");
   }
 
+  console.log("Deleting lift with ID:", _id, "for user_id:", req.user.id);
+
+  if (!req.user.id) {
+    return res.status(403).send("You do not have permission to delete this lift");
+  }
+
   try {
-    const deletedLift = await deleteLift(_id);
+    const deletedLift = await deleteLift(_id, req.user.id);
     if (!deletedLift) return res.status(404).send("Lift not found");
     return res.status(200).send("Lift deleted successfully");
   } catch (error) {
