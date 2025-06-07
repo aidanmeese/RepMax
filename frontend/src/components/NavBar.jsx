@@ -28,7 +28,7 @@ function NavBar() {
         <div className="main-section">
           <div className="container2">
             <Link to="/" className="header-left">
-              <img src="../../images/RepMaxWhiteArmLogo.png" className="logo" />
+              <img src="/RepMaxWhiteArmLogo.png" className="logo" />
               <div className="header-title">
                 RepMax
               </div>
