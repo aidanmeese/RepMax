@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { createUser, getUser } from '../services/user-services.js';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
