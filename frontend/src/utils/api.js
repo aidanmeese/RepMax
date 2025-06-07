@@ -2,9 +2,7 @@ import axios from 'axios';
 import { getDefaultStore } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 
-export const BASE_URL = import.meta.env.DEV
-    ? "https://repmax-api.onrender.com"
-    : "http://localhost:8000";
+export const BASE_URL = "https://repmax-api.onrender.com";
 
 const store = getDefaultStore();
 export const INVALID_TOKEN = "invalid_token";
