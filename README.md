@@ -1,6 +1,8 @@
 # RepMax
 *Unlock Strength, Track Progress, Achieve More*
 
+RepMax is a full-stack web application designed to help users calculate, track, and improve their strength training progress. It provides personalized tools and data-driven insights to support fitness goals with a focus on usability, data persistence, and scalability.
+
 Built with the tools and technologies:
 
 ![React](https://img.shields.io/badge/React-blue?logo=react)
